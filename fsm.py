@@ -1,5 +1,8 @@
 from transitions.extensions import GraphMachine
-
+import requests
+import time
+import s
+from bs4 import BeautifulSoup
 
 class TocMachine(GraphMachine):
     def __init__(self, **machine_configs):
@@ -8,10 +11,23 @@ class TocMachine(GraphMachine):
             **machine_configs
         )
 
+    def get_web_page(url):
+        resp = requests.get(
+            url=url,
+        )
+        if resp.status_code != 200:
+            print('Invalid url:', resp.url)
+            return None
+        else:
+            return resp.text
+ 
     def is_going_to_menu(self, update):
         text = update.message.text
         return text.lower() == 'menu'
 
+    def is_going_to_order(self, update):
+        text = update.message.text
+        return text.lower() == '0'
     def is_going_to_chinese(self, update):
         text = update.message.text
         return text.lower() == '1'
@@ -84,10 +100,20 @@ class TocMachine(GraphMachine):
 
     def on_enter_menu(self, update):
         print('enter menu')
-        update.message.reply_text("請輸入 1 中式，2 義式，3 泰式，4 美式")
+        update.message.reply_text("請輸入 0 查詢食譜排行榜 1 中式，2 義式，3 泰式，4 美式")
         self.advance(update)
     def on_exit_menu(self, update):
         print('Leaving menu')
+
+
+    def on_enter_order(self, update):
+        print('enter order')
+        orderStr=s.run()
+        update.message.reply_text(orderStr)
+        self.go_back(update)
+    def on_exit_order(self, update):
+        print('Leaving order')
+
 
     def on_enter_chinese(self, update):
         print('enter chinese')

@@ -36,6 +36,7 @@ machine = TocMachine(
         'USA',
         'chicken',
         'Ham',
+        'order',
     ],
     transitions=[
         {
@@ -43,6 +44,12 @@ machine = TocMachine(
             'source': 'user',
             'dest': 'menu',
             'conditions': 'is_going_to_menu'
+        },
+        {
+            'trigger': 'advance',
+            'source': 'menu',
+            'dest': 'order',
+            'conditions': 'is_going_to_order'
         },
         {
             'trigger': 'advance',
@@ -180,6 +187,7 @@ machine = TocMachine(
                 'thaiNoodle',
                 'chicken',
                 'Ham',
+                'order',
             ],
             'dest': 'user'
         }
